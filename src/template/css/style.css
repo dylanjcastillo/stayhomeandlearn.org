@@ -9,31 +9,21 @@ body {
   padding-top: 50px;
   padding-bottom: 20px;
 }
-container {
-  background: blue;
-}
 h1,
 h2 {
   font-family: "Open Sans Condensed", sans-serif;
 }
 table {
   font-size: 0.825em;
-  margin-left: 2em;
 }
 table th[scope="col"] {
   font-weight: 700;
 }
 @media screen and (min-width: 992px) {
   .container {
-    max-width: 67%;
+    max-width: 66.7%;
   }
 }
-.one-edge-shadow {
-  -moz-box-shadow: 3px 3px 5px 6px #ccc;
-  -webkit-box-shadow: 3px 3px 5px 6px #ccc;
-  box-shadow: 3px 3px 5px 6px #ccc;
-}
-
 hr {
     border: 0;
     border-bottom: 2px;

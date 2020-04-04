@@ -6,14 +6,14 @@
     <title>&#128126; &#128567; &#128640; Stay The (F***) Home & Learn</title>
     <meta name="title" content="&#128126; &#128567; &#128640; Stay (The F***) Home & Learn">
     <meta name="description"
-          content="A list of self-improvement resources available for free or at discounted prices due to the COVID-1">
+          content="{{ meta_content }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://stayhomeandlearn.org/">
     <meta property="og:title" content="Stay (The F***) Home & Learn">
     <meta property="og:description"
-          content="A list of self-improvement resources available for free or at discounted prices due to the COVID-1">
+          content="{{ meta_content }}">
     <meta property="og:image" content="https://stayhomeandlearn.org/assets/meta-img.jpg">
 
     <!-- Twitter -->
@@ -21,10 +21,10 @@
     <meta property="twitter:url" content="https://stayhomeandlearn.org">
     <meta property="twitter:title" content="Stay (The F***) Home & Learn">
     <meta property="twitter:description"
-          content="A list of self-improvement resources available for free or at discounted prices due to the COVID-1">
+          content="{{ meta_content }}">
     <meta property="twitter:image" content="https://stayhomeandlearn.org/assets/meta-img.jpg">
 
-    <meta name="keywords" content="Free Resources, COVID, Coronavirus, Discounts">
+    <meta name="keywords" content="Free Resources, COVID-19, Coronavirus, Discounts">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
     <link
@@ -49,10 +49,15 @@
         </p>
     </div>
 </header>
+
+<section class="text-center " id="last-updated">
+    <p><b>Last Updated:</b> {{ last_update }}</p>
+</section>
+
 {% for ls in lists %}
 <section class="list">
-    <div class="container py-4">
-        <h2>{{ ls[0] }}</h2>
+    <div class="container py-4" id="{{ ls[0] }}">
+        <h2>{{ ls[1] }}</h2>
         <div class="table-responsive">
             <table class="table table-borderless table-hover">
                 <thead>
@@ -64,7 +69,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for row in ls[1] %}
+                {% for row in ls[2] %}
                 <tr>
                     <td>{{ row["provider"] }}</td>
                     <td>{{ row["description"] }}</td>
@@ -82,16 +87,38 @@
 <footer>
     <div class="container">
         <div class="text-center">
-            <a
-                    href="https://docs.google.com/forms/d/e/1FAIpQLSf6qLcvJGWS3VltKV99sO0KhBxmWxb0sdIpVu93OolL42s7rQ/viewform?usp=sf_link"
-            >
-                Suggest a New Resource
-            </a>
+            <p>
+                <a
+                        href="https://docs.google.com/forms/d/e/1FAIpQLSf6qLcvJGWS3VltKV99sO0KhBxmWxb0sdIpVu93OolL42s7rQ/viewform?usp=sf_link"
+                >
+                    Suggest a New Resource
+                </a>
+                 |
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfd4IFQ0xgFnbF04EvPjsN5fuwOj95v1rN6X2ftpu3drTXOiQ/viewform?usp=sf_link"> Submit Feedback</a>
+            </p>
         </div>
         <div class="text-center py-4">
             <a id="made-text" href="https://dylancastillo.co/">Made with &#128567; by Dylan</a>
         </div>
     </div>
+    <!-- Fathom - simple website analytics - https://usefathom.com -->
+    <script>
+        (function(f, a, t, h, o, m){
+        a[h]=a[h]||function(){
+        (a[h].q=a[h].q||[]).push(arguments)
+        };
+        o=f.createElement('script'),
+        m=f.getElementsByTagName('script')[0];
+        o.async=1; o.src=t; o.id='fathom-script';
+        m.parentNode.insertBefore(o,m)
+        })(document, window, 'https://cdn.usefathom.com/tracker.js', 'fathom');
+        fathom('set', 'siteId', 'PFONKUML');
+        fathom('trackPageview');
+
+
+    
+    </script>
+    <!-- / Fathom -->
 </footer>
 </body>
 </html>
