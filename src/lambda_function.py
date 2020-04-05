@@ -81,7 +81,7 @@ def generate_site():
         if filename.is_dir():
             shutil.copytree(filename, SITE_DIR / filename.name)
         elif filename.name != "template.html" and filename.name != ".DS_Store":
-            shutil.copy(filename, SITE_DIR)
+            shutil.copy(str(filename), SITE_DIR)
     template_loader = jinja2.FileSystemLoader(searchpath=TEMPLATE_DIR)
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template("template.html")
@@ -94,7 +94,7 @@ def generate_site():
     for csv_file in csv_files:
         original_name = re.search(r"[0-9]_(.*?)\.csv", csv_file.name).group(1)
         proc_name = LISTS_MAPPING.get(original_name, original_name)
-        with open(csv_file, mode="r") as csv_file:
+        with open(str(csv_file), mode="r") as csv_file:
             csv_reader = csv.DictReader(csv_file)
             list_ind = [row for row in csv_reader]
             lists_all.append((original_name, proc_name, list_ind))
