@@ -1,18 +1,21 @@
 import csv
 import re
 import shutil
+from datetime import datetime
 from pathlib import Path
 
+import boto3
 import gspread
 import jinja2
 from oauth2client.service_account import ServiceAccountCredentials
-from datetime import datetime
 
 ROOT_DIR = Path(__file__).parent
 TEMPLATE_DIR = ROOT_DIR / "template"
 CSS_DIR = TEMPLATE_DIR / "css"
 SITE_DIR = ROOT_DIR / "site"
 DATA_DIR = ROOT_DIR / "data"
+
+IGNORED_FILES = ["template.html", ".DS_Store"]
 
 LISTS_MAPPING = {
     "learning_resources": "&#128218; Learning Resources",
@@ -47,21 +50,20 @@ A list of +50 high-quality resources available for free or cheaper than usual du
 
 
 def download_sheets():
+    """Download sheets using the Google Sheets API"""
+    shutil.rmtree(DATA_DIR, ignore_errors=True)
+    DATA_DIR.mkdir()
+
     scope = [
         "https://spreadsheets.google.com/feeds",
         "https://www.googleapis.com/auth/drive",
     ]
-    creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
-    client = gspread.authorize(creds)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(
+        "credentials.json", scope
+    )
+    client = gspread.authorize(credentials)
 
     workbook = client.open("Stay Home and Learn")
-
-    try:
-        shutil.rmtree(DATA_DIR)
-    except:
-        pass
-    DATA_DIR.mkdir()
-
     for worksheet in workbook.worksheets():
         filename = DATA_DIR / (worksheet.title + ".csv")
         sheet_values = worksheet.get_all_values()
@@ -72,14 +74,13 @@ def download_sheets():
 
 
 def generate_site():
-    try:
-        shutil.rmtree(SITE_DIR)
-    except:
-        pass
+    """Generate site in local directory"""
+    shutil.rmtree(SITE_DIR, ignore_errors=True)
     SITE_DIR.mkdir()
+
     for filename in TEMPLATE_DIR.iterdir():
         if filename.is_dir():
-            shutil.copytree(filename, SITE_DIR / filename.name)
+            shutil.copytree(str(filename), SITE_DIR / filename.name)
         elif filename.name != "template.html" and filename.name != ".DS_Store":
             shutil.copy(str(filename), SITE_DIR)
     template_loader = jinja2.FileSystemLoader(searchpath=TEMPLATE_DIR)
@@ -93,11 +94,11 @@ def generate_site():
     lists_all = []
     for csv_file in csv_files:
         original_name = re.search(r"[0-9]_(.*?)\.csv", csv_file.name).group(1)
-        proc_name = LISTS_MAPPING.get(original_name, original_name)
+        processed_name = LISTS_MAPPING.get(original_name, original_name)
         with open(str(csv_file), mode="r") as csv_file:
             csv_reader = csv.DictReader(csv_file)
             list_ind = [row for row in csv_reader]
-            lists_all.append((original_name, proc_name, list_ind))
+            lists_all.append((original_name, processed_name, list_ind))
 
     curr_date = datetime.now().strftime("%B %-d, %Y")
     output = template.render(
@@ -111,27 +112,35 @@ def generate_site():
         f.write(output)
 
 
+def upload_recursively_to_s3(dir, s3, prefix=""):
+    """Upload a directory to s3 in a recursive manner (adding all files under it)
+
+    Parameters
+    ----------
+    dir: Directory to upload to S3
+    s3: Boto3 S3 Resource
+    prefix: Prefix for directory to upload (e.g. /css)
+    """
+    for filename in dir.iterdir():
+        if filename.is_dir():
+            upload_recursively_to_s3(filename, s3, prefix + filename.name + "/")
+        elif filename.name not in IGNORED_FILES:
+            content_type = CONTENT_TYPE_MAPPING.get(
+                filename.suffix, "application/octet-stream"
+            )
+            s3.Bucket("dev-stayhomeandlearn.org").upload_file(
+                Filename=str(filename),
+                Key=prefix + filename.name,
+                ExtraArgs={"ContentType": content_type},
+            )
+
+
 def build_site():
     download_sheets()
     generate_site()
-    import boto3
-
     session = boto3.Session(profile_name="personal")
     s3 = session.resource("s3")
-
-    def upload_recursively(dir, prefix=""):
-        for filename in dir.iterdir():
-            if filename.is_dir():
-                upload_recursively(filename, prefix + filename.name + "/")
-            elif filename.name != "template.html" and filename.name != ".DS_Store":
-                content_type = CONTENT_TYPE_MAPPING.get(filename.suffix)
-                s3.Bucket("dev-stayhomeandlearn.org").upload_file(
-                    Filename=str(filename),
-                    Key=prefix + filename.name,
-                    ExtraArgs={"ContentType": content_type},
-                )
-
-    upload_recursively(TEMPLATE_DIR)
+    upload_recursively_to_s3(dir=SITE_DIR, s3=s3)
 
 
 if __name__ == "__main__":
