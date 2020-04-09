@@ -1,4 +1,5 @@
 # stayhomeandlearn.org
+![Python](https://img.shields.io/badge/Python-v3.7.1-brightgreen) ![License](https://img.shields.io/badge/license-MIT-blue) ![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)
 
 Repository containing code for building and deploying the [stayhomeandlearn.org](https://stayhomeandlearn.org) site.
 
