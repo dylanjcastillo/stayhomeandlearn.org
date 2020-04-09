@@ -1,25 +1,35 @@
+import configparser
 import csv
 import re
 import shutil
+import time
 import webbrowser
 from datetime import datetime
-from site_builder.utils import (
-    SRC_DIR,
-    TEMPLATE_DIR,
-    SITE_DIR,
-    DATA_DIR,
-    IGNORED_FILES,
-    LISTS_MAPPING,
-    CONTENT_TYPE_MAPPING,
-)
+
 import boto3
 import gspread
 import jinja2
 from oauth2client.service_account import ServiceAccountCredentials
 
-INTRO_TEXT = """
-"""
+from site_builder.utils import (
+    CONTENT_TYPE_MAPPING,
+    DATA_DIR,
+    IGNORED_FILES,
+    INVALIDATIONS,
+    LISTS_MAPPING,
+    SITE_DIR,
+    SRC_DIR,
+    TEMPLATE_DIR,
+)
 
+config = configparser.ConfigParser()
+config.read_file(open(SRC_DIR / "aws_config.ini"))
+
+AWS_PROFILE = config.get("aws", "profile")
+AWS_REGION = config.get("aws", "region")
+BUCKET_DEV = config.get("aws", "bucket_dev")
+BUCKET_PROD = config.get("aws", "bucket_prod")
+DISTRIBUTION_ID = config.get("aws", "distribution_id")
 META_CONTENT = """
 A list of +50 high-quality resources available for free or cheaper than usual due to the COVID-19
 """
@@ -54,6 +64,7 @@ def generate_site():
     shutil.rmtree(SITE_DIR, ignore_errors=True)
     SITE_DIR.mkdir()
 
+    print("Copy template to site folder")
     for filename in TEMPLATE_DIR.iterdir():
         if filename.is_dir():
             shutil.copytree(str(filename), SITE_DIR / filename.name)
@@ -63,6 +74,7 @@ def generate_site():
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template("template.html")
 
+    print("Process data and build site")
     csv_files = [
         filename for filename in DATA_DIR.iterdir() if filename.suffix == ".csv"
     ]
@@ -78,45 +90,74 @@ def generate_site():
 
     curr_date = datetime.now().strftime("%B %-d, %Y")
     output = template.render(
-        lists=lists_all,
-        intro_text=INTRO_TEXT,
-        last_update=curr_date,
-        meta_content=META_CONTENT,
+        lists=lists_all, last_update=curr_date, meta_content=META_CONTENT,
     )
 
     with open(SITE_DIR / "index.html", "w") as f:
         f.write(output)
 
 
-def upload_recursively_to_s3(dir, s3, prefix=""):
+def upload_recursively_to_s3(dir, bucket_name, s3, prefix="", verbose=True):
     """Upload a directory to s3 in a recursive manner (adding all files under it)
 
     Parameters
     ----------
     dir: Directory to upload to S3
+    bucket_name: Name of bucket where site will be uploaded
     s3: Boto3 S3 Resource
     prefix: Prefix for directory to upload (e.g. /css)
     """
     for filename in dir.iterdir():
         if filename.is_dir():
-            upload_recursively_to_s3(filename, s3, prefix + filename.name + "/")
+            upload_recursively_to_s3(
+                dir=filename,
+                bucket_name=bucket_name,
+                s3=s3,
+                prefix=prefix + filename.name + "/",
+            )
         elif filename.name not in IGNORED_FILES:
+            if verbose:
+                print(f"Uploading file: {prefix + filename.name}")
             content_type = CONTENT_TYPE_MAPPING.get(
                 filename.suffix, "application/octet-stream"
             )
-            s3.Bucket("dev-stayhomeandlearn.org").upload_file(
+            s3.Bucket(bucket_name).upload_file(
                 Filename=str(filename),
                 Key=prefix + filename.name,
                 ExtraArgs={"ContentType": content_type},
             )
 
 
-def deploy_site():
-    session = boto3.Session(profile_name="personal")
-    s3 = session.resource("s3")
-    upload_recursively_to_s3(dir=SITE_DIR, s3=s3)
-    webbrowser.open("file://" + str(SITE_DIR / "index.html"))
+def deploy_site(env="local", clear_cloudfront_cache=False):
+    """Deploy site locally (just open browser :D), or to dev/prod bucket
 
-
-if __name__ == "__main__":
-    deploy_site()
+    Parameters
+    ----------
+    env: Type of deployment. Either local, dev, or prod
+    clear_cloudfront_cache: Clears cache in Cloudfront (to see changes instantly)
+    """
+    if env == "local":
+        webbrowser.open("file://" + str(SITE_DIR / "index.html"))
+    elif env == "dev":
+        print("Upload data to S3")
+        session = boto3.Session(profile_name=AWS_PROFILE)
+        s3 = session.resource("s3")
+        upload_recursively_to_s3(dir=SITE_DIR, bucket_name=BUCKET_DEV, s3=s3)
+        webbrowser.open(f"http://{BUCKET_DEV}.s3-website.{AWS_REGION}.amazonaws.com")
+    elif env == "prod":
+        print("Upload data to S3")
+        session = boto3.Session(profile_name=AWS_PROFILE)
+        s3 = session.resource("s3")
+        upload_recursively_to_s3(dir=SITE_DIR, bucket_name=BUCKET_PROD, s3=s3)
+        if clear_cloudfront_cache:
+            print("Clear Cloudfront cache")
+            session = boto3.Session(profile_name=AWS_PROFILE)
+            cloudfront = session.client("cloudfront")
+            invalidation = cloudfront.create_invalidation(
+                DistributionId=DISTRIBUTION_ID,
+                InvalidationBatch={
+                    "Paths": {"Quantity": len(INVALIDATIONS), "Items": INVALIDATIONS},
+                    "CallerReference": str(time.time()),
+                },
+            )
+        webbrowser.open(f"http://{BUCKET_PROD}.s3-website.{AWS_REGION}.amazonaws.com")
