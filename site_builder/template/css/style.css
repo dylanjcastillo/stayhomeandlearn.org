@@ -1,0 +1,59 @@
+#emoji-covid19 {
+    text-align: center;
+    font-size: 64px;
+}
+
+body {
+    font-family: "Open Sans", sans-serif;
+}
+
+#header {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+h1,
+h2 {
+    font-family: "Open Sans Condensed", sans-serif;
+}
+
+table {
+    font-size: 0.825em;
+}
+
+table th[scope="col"] {
+    font-weight: 700;
+}
+
+@media screen and (min-width: 992px) {
+    .container {
+        max-width: 66.7%;
+    }
+}
+
+hr {
+    border: 0;
+    border-bottom: 2px;
+    border-style: solid;
+    border-color: black;
+}
+
+#made-text {
+    font-size: 0.825em;
+    color: #8e8d8d;
+}
+
+.new:before {
+    position: absolute;
+    z-index: 1;
+    margin-top: -10px;
+    content: "New";
+    color: crimson;
+    font-size: 0.625em;
+    font-weight: bold;
+    display: inline-block;
+}
+
+tr {
+    position: relative;
+}

@@ -41,11 +41,26 @@
             Stay (The F***) Home & Learn
         </h1>
         <h1 class="text-center pb-1 font-weight-bold d-block d-sm-none">
-            Stay (The F***) Home <br> & <br>Learn
+            Stay (The F***) Home<br> & <br>Learn
         </h1>
         <hr>
         <p class="pt-2">
-            {{ intro_text }}
+            <b>COVID-19 continues disrupting lives.</b> Some are going through severe health situations. Others have
+            lost their jobs. And by now, many of us are quarantined in our homes.
+            <br><br>
+            Life may feel tough now, but don't despair. This can be a time to learn new things, get better at your craft
+            or enjoy (virtual) time with friends and family.
+            <br><br>
+            <b>This page is a list of high-quality resources available for free or cheaper than usual due to the
+                COVID-19:</b>
+            <a href="#learning_resources"> Learning Resources</a>,
+            <a href="#health"> Health & Fitness</a>,
+            <a href="#productivity"> Productivity</a>, and
+            <a href="#entertainment"> Entertainment</a>.
+            <br><br>
+            If you like them, use them or share them with others. If you know of something that is not here, <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSf6qLcvJGWS3VltKV99sO0KhBxmWxb0sdIpVu93OolL42s7rQ/viewform?usp=sf_link">please
+            let me know</a>.
         </p>
     </div>
 </header>
@@ -70,11 +85,11 @@
                 </thead>
                 <tbody>
                 {% for row in ls[2] %}
-                <tr>
-                    <td>{{ row["provider"] }}</td>
-                    <td>{{ row["description"] }}</td>
-                    <td>{{ row["notes"] }}</td>
-                    <td><a href="{{ row['source'] }}">[link]</a></td>
+                <tr {% if row["new"] == "Y" %} class="table-warning" {% endif %}>
+                <td {% if row["new"] == "Y" %} class="new" {% endif %}>{{ row["provider"] }}</td>
+                <td>{{ row["description"] }}</td>
+                <td>{{ row["notes"] }}</td>
+                <td><a href="{{ row['source'] }}" target="_blank" rel="noopener noreferrer">[link]</a></td>
                 </tr>
                 {% endfor %}
                 </tbody>
@@ -93,8 +108,9 @@
                 >
                     Suggest a New Resource
                 </a>
-                 |
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfd4IFQ0xgFnbF04EvPjsN5fuwOj95v1rN6X2ftpu3drTXOiQ/viewform?usp=sf_link"> Submit Feedback</a>
+                |
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfd4IFQ0xgFnbF04EvPjsN5fuwOj95v1rN6X2ftpu3drTXOiQ/viewform?usp=sf_link">
+                    Submit Feedback</a>
             </p>
         </div>
         <div class="text-center py-4">
@@ -103,20 +119,21 @@
     </div>
     <!-- Fathom - simple website analytics - https://usefathom.com -->
     <script>
-        (function(f, a, t, h, o, m){
-        a[h]=a[h]||function(){
-        (a[h].q=a[h].q||[]).push(arguments)
-        };
-        o=f.createElement('script'),
-        m=f.getElementsByTagName('script')[0];
-        o.async=1; o.src=t; o.id='fathom-script';
-        m.parentNode.insertBefore(o,m)
+        (function (f, a, t, h, o, m) {
+            a[h] = a[h] || function () {
+                (a[h].q = a[h].q || []).push(arguments)
+            };
+            o = f.createElement('script'),
+                m = f.getElementsByTagName('script')[0];
+            o.async = 1;
+            o.src = t;
+            o.id = 'fathom-script';
+            m.parentNode.insertBefore(o, m)
         })(document, window, 'https://cdn.usefathom.com/tracker.js', 'fathom');
         fathom('set', 'siteId', 'PFONKUML');
         fathom('trackPageview');
 
 
-    
     </script>
     <!-- / Fathom -->
 </footer>

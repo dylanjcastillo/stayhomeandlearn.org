@@ -1,49 +1,25 @@
 import csv
 import re
 import shutil
+import webbrowser
 from datetime import datetime
-from pathlib import Path
-
+from site_builder.utils import (
+    SRC_DIR,
+    TEMPLATE_DIR,
+    SITE_DIR,
+    DATA_DIR,
+    IGNORED_FILES,
+    LISTS_MAPPING,
+    CONTENT_TYPE_MAPPING,
+)
 import boto3
 import gspread
 import jinja2
 from oauth2client.service_account import ServiceAccountCredentials
 
-ROOT_DIR = Path(__file__).parent
-TEMPLATE_DIR = ROOT_DIR / "template"
-CSS_DIR = TEMPLATE_DIR / "css"
-SITE_DIR = ROOT_DIR / "site"
-DATA_DIR = ROOT_DIR / "data"
-
-IGNORED_FILES = ["template.html", ".DS_Store"]
-
-LISTS_MAPPING = {
-    "learning_resources": "&#128218; Learning Resources",
-    "productivity": "&#128187; Productivity",
-    "health": "&#x1F3CB; Health & Fitness",
-    "entertainment": "&#x1F4FA; Entertainment",
-}
-
-CONTENT_TYPE_MAPPING = {
-    ".css": "text/css",
-    ".html": "text/html",
-    ".jpg": "image/jpeg",
-    ".xml": "text/xml",
-}
-
 INTRO_TEXT = """
-<b>COVID-19 continues disrupting lives.</b> Some are going through severe health situations. Others have lost their jobs. And by now, many of us are quarantined in our homes.
-<br><br>
-Life may feel tough now, but don't despair. This can be a time to learn new things, get better at your craft or enjoy (virtual) time with friends and family. 
-<br><br>
-<b>This page is a list of high-quality resources available for free or cheaper than usual due to the COVID-19:</b>
-<a href="#learning_resources"> Learning Resources</a>,
-<a href="#health"> Health & Fitness</a>,
-<a href="#productivity"> Productivity</a>, and
-<a href="#entertainment"> Entertainment</a>.
-<br><br>
-If you like them, use them or share them with others. If you know of something that is not here, <a href="https://docs.google.com/forms/d/e/1FAIpQLSf6qLcvJGWS3VltKV99sO0KhBxmWxb0sdIpVu93OolL42s7rQ/viewform?usp=sf_link">please let me know</a>.
 """
+
 META_CONTENT = """
 A list of +50 high-quality resources available for free or cheaper than usual due to the COVID-19
 """
@@ -59,7 +35,7 @@ def download_sheets():
         "https://www.googleapis.com/auth/drive",
     ]
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
-        "credentials.json", scope
+        SRC_DIR / "credentials.json", scope
     )
     client = gspread.authorize(credentials)
 
@@ -135,13 +111,12 @@ def upload_recursively_to_s3(dir, s3, prefix=""):
             )
 
 
-def build_site():
-    download_sheets()
-    generate_site()
+def deploy_site():
     session = boto3.Session(profile_name="personal")
     s3 = session.resource("s3")
     upload_recursively_to_s3(dir=SITE_DIR, s3=s3)
+    webbrowser.open("file://" + str(SITE_DIR / "index.html"))
 
 
 if __name__ == "__main__":
-    build_site()
+    deploy_site()
