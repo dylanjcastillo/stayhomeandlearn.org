@@ -6,3 +6,4 @@ credentials.json
 *.pyc
 site/
 data/
+aws_config.ini
