@@ -70,6 +70,14 @@ You can also build the site and deploy it directly to S3. For the dev bucket you
 
 If you have your production site and Cloudfront configuration setup, you can run `python run.py --env prod --clear`. This will deploy the site and clear the Cloudfront cache, so that your latest changes on your site get reflected through the CDN. 
 
+# How to contribute
+
+There's essentially 3 ways of contributing:
+
+1. [Suggest new resources](https://docs.google.com/forms/d/e/1FAIpQLSf6qLcvJGWS3VltKV99sO0KhBxmWxb0sdIpVu93OolL42s7rQ/viewform?usp=sf_link)
+2. [Submit feedback](https://docs.google.com/forms/d/e/1FAIpQLSfd4IFQ0xgFnbF04EvPjsN5fuwOj95v1rN6X2ftpu3drTXOiQ/viewform?usp=sf_link)
+3. [Open an issue](https://github.com/dylanjcastillo/stayhomeandlearn.org/issues/new/choose)
+
 # License
 
 This project is licensed under the terms of the MIT license.
