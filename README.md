@@ -6,7 +6,7 @@ Repository containing the code and resources for building and deploying the [sta
 
 # How to setup locally
 
-These are the instructions for setting up the site, including the setting up Google Sheets API as a CMS, and hosting it on S3 for free. 
+These are the instructions for setting up the site, including using the Google Sheets API as a CMS and hosting the site on S3 for free ([if you are within the limits of the free tier](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc)).
 For that purpose, you'll need to have a [Google account](https://myaccount.google.com/), a [GCP account](https://cloud.google.com/), and an [AWS account](https://aws.amazon.com/free/). 
 
 In addition, you should have the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) installed, as it currently uses whatever profile you specify in the `aws_config.ini` for connecting to AWS.
@@ -14,7 +14,8 @@ In addition, you should have the [AWS CLI](https://docs.aws.amazon.com/cli/lates
 ## Setup local repository
 1. Clone repository `git clone https://github.com/dylanjcastillo/stayhomeandlearn.org.git`
 2. Get into the repository's local folder and create a virtual environment: `python3 -m venv venv`
-3. Install required libraries `pip3 install -r requirements.txt`
+3. Install required libraries: `pip3 install -r requirements.txt`
+4. Activate virtual environment: `source venv/bin/activate`
 
 ## Using the Google Sheets API
 1. Create a Workbook in Google Sheets (this is mine: [Stay Home and Learn](https://docs.google.com/spreadsheets/d/1RiPaFQHyDr1-jmefeenK3TAnn9MShQQBhD6fZV0LgGM/edit?usp=sharing))
@@ -64,7 +65,11 @@ This policy will make the objects store in the bucket you just created publicly 
 
 # How to use
 
+### For testing locally
+
 From the root folder of your repository, you can simply run it as follows: `python run.py`. This will download the sheets from your workbook, generate the site, and open a local version of it in your web browser.
+
+### For deploying to dev/prod
 
 You can also build the site and deploy it directly to S3. For the dev bucket you can run the following command: `python run.py --env dev`.
 
