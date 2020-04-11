@@ -14,8 +14,8 @@ In addition, you should have the [AWS CLI](https://docs.aws.amazon.com/cli/lates
 ## Setup local repository
 1. Clone repository `git clone https://github.com/dylanjcastillo/stayhomeandlearn.org.git`
 2. Get into the repository's local folder and create a virtual environment: `python3 -m venv venv`
-3. Install required libraries: `pip3 install -r requirements.txt`
-4. Activate virtual environment: `source venv/bin/activate`
+3. Activate the virtual environment: `source venv/bin/activate`
+4. Install required libraries: `pip3 install -r requirements.txt`
 
 ## Using the Google Sheets API
 1. Create a Workbook in Google Sheets (this is mine: [Stay Home and Learn](https://docs.google.com/spreadsheets/d/1RiPaFQHyDr1-jmefeenK3TAnn9MShQQBhD6fZV0LgGM/edit?usp=sharing))
