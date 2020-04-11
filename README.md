@@ -65,6 +65,8 @@ This policy will make the objects store in the bucket you just created publicly 
 
 # How to use
 
+## Building the site
+
 ### For testing locally
 
 From the root folder of your repository, you can simply run it as follows: `python run.py`. This will download the sheets from your workbook, generate the site, and open a local version of it in your web browser.
@@ -73,7 +75,13 @@ From the root folder of your repository, you can simply run it as follows: `pyth
 
 You can also build the site and deploy it directly to S3. For the dev bucket you can run the following command: `python run.py --env dev`.
 
-If you have your production site and Cloudfront configuration setup, you can run `python run.py --env prod --clear`. This will deploy the site and clear the Cloudfront cache, so that your latest changes on your site get reflected through the CDN. 
+If you have your production site and Cloudfront configuration setup, you can run `python run.py --env prod --clear`. This will deploy the site and clear the Cloudfront cache, so that your latest changes on your site get reflected through the CDN.
+
+## What if I want use my own HTML/CSS?
+
+If you want to use this to build a different site, go to `site_builder/template`, add your HTML/CSS code and assets there. Then go to `site_builder.py` and modify the `generate_site` function to adapt it to your needs. Build the site when ready.
+
+For these cases, I'd recommend checking [Jinja2's documentation](https://jinja.palletsprojects.com/en/2.11.x/).
 
 # How to contribute
 
