@@ -18,17 +18,17 @@ In addition, you should have the [AWS CLI](https://docs.aws.amazon.com/cli/lates
 4. Install required libraries: `pip3 install -r requirements.txt`
 
 ## Using the Google Sheets API
-1. Create a Workbook in Google Sheets (this is mine: [Stay Home and Learn](https://docs.google.com/spreadsheets/d/1RiPaFQHyDr1-jmefeenK3TAnn9MShQQBhD6fZV0LgGM/edit?usp=sharing))
+
+1. Create a Workbook in Google Sheets (you can copy mine: [Stay Home and Learn](https://docs.google.com/spreadsheets/d/1RiPaFQHyDr1-jmefeenK3TAnn9MShQQBhD6fZV0LgGM/edit?usp=sharing))
 2. Go to the [Google APIs Console](https://console.developers.google.com/)
 3. Create a new project.
-4. Click Enable API. Search for and enable the Google Drive API.
-5. *Create credentials* for a *Web Server* to access *Application Data*.
-6. Name the service account and grant it a *Project* Role of *Editor*.
-7. Download the JSON file.
-8. Copy the JSON file <REPO>/site_builder and rename it to `credentials.json`
-9. Find the client_email inside `credentials.json`. Back in your spreadsheet, click the *Share* button in the top right, and paste the client email into the *People* field to give it edit rights. Hit Send. 
-
-Steps 3-9 are *borrowed* from here: [Google Spreadsheets and Python](https://www.twilio.com/blog/2017/02/an-easy-way-to-read-and-write-to-a-google-spreadsheet-in-python.html)
+4. Click on *Enable API and Services*. Search for and enable the *Google Sheets API*. 
+5. Go back to the [Google APIs Console](https://console.developers.google.com/) and click on *Enable API and Services* again. Now search for and enable the *Google Drive API*.
+6. Click on Create credentials. For the next 4 questions select: Google Drive API, Web Server (e.g. node.js, Tomcat), Application data, and No, I'm not using them. 
+7. Click on *What credentials do I need?* Select a name for the service account grant it a Project Role of *Editor*. Select the JSON option for *Key type*
+8. Download the JSON file.
+9. Copy the JSON file <REPO>/site_builder and rename it to `credentials.json`
+10. Find the *client_email* inside `credentials.json`. Back in your spreadsheet, click the *Share* button in the top right, and paste the client email into the *People* field to give it edit rights. Hit Send. 
 
 ## Setting up an S3 bucket for hosting a static site 
 
