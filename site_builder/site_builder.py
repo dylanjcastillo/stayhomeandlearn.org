@@ -31,7 +31,7 @@ BUCKET_DEV = config.get("aws", "bucket_dev")
 BUCKET_PROD = config.get("aws", "bucket_prod")
 DISTRIBUTION_ID = config.get("aws", "distribution_id")
 META_CONTENT = """
-A list of +50 high-quality resources available for free or cheaper than usual due to the COVID-19
+A list of +50 high-quality resources available for free or cheaper than usual due to the COVID-19 so you can stay home and learn.
 """
 
 
