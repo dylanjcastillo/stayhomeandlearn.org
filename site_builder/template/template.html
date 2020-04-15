@@ -85,8 +85,8 @@
                 </thead>
                 <tbody>
                 {% for row in ls[2] %}
-                <tr {% if row["new"] == "Y" %} class="table-warning" {% endif %}>
-                <td {% if row["new"] == "Y" %} class="new" {% endif %}>{{ row["provider"] }}</td>
+                <tr {% if row["status"] == "new" %} class="table-warning" {% elif row["status"] == "ptm" %} class="table-success" {% endif %}>
+                <td {% if row["status"] == "new" %} class="new" {% elif row["status"] == "ptm" %} class="sg" {% endif %}>{{ row["provider"] }}</td>
                 <td>{{ row["description"] }}</td>
                 <td>{{ row["notes"] }}</td>
                 <td><a href="{{ row['source'] }}" target="_blank" rel="noopener noreferrer">[link]</a></td>
