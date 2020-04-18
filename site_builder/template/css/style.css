@@ -43,17 +43,28 @@ hr {
     color: #8e8d8d;
 }
 
-.new:before {
-    position: absolute;
-    z-index: 1;
-    margin-top: -10px;
-    content: "New";
-    color: crimson;
-    font-size: 0.625em;
+.description {
     font-weight: bold;
-    display: inline-block;
+    color: #1A202C;
 }
 
-tr {
-    position: relative;
+.provider {
+    color: #535b69
+}
+
+small {
+    color: #8a98aa;
+}
+
+.new {
+    color: #8C6D1F;
+    background-color: #FAE29F;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #3183C8;
+}
+
+a {
+    color: #3183C8;
 }
