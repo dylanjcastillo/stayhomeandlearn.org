@@ -68,3 +68,13 @@ small {
 a {
     color: #3183C8;
 }
+
+.alert-warning {
+    border-radius: 0;
+    border-left: 4px solid;
+    border-right: none;
+    border-bottom: none;
+    border-top: none;
+    border-color: #CAA53D;
+    background-color: #FFFCF4;
+}
