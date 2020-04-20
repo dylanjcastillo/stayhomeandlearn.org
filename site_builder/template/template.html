@@ -107,6 +107,7 @@
                 <a href="{{ row['source'] }}" target="_blank" rel="noopener noreferrer"
                    class="list-group-item list-group-item-action">
                     {% if row["status"] == "new" %} <span class="badge badge-pill new mb-1">NEW</span> {% endif %}
+                    {% if row["status"] == "updated" %} <span class="badge badge-pill updated mb-1">UPDATED</span> {% endif %}
                     <div class="d-flex w-100 justify-content-between">
                         <p class="mb-1 description">{{ row["description"] }}</p>
                         <!--                <small class="d-sm-block d-none">3 days ago</small> -->

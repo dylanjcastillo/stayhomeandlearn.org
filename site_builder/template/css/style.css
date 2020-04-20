@@ -61,6 +61,11 @@ small {
     background-color: #FAE29F;
 }
 
+.updated {
+    color: #1B655E;
+    background-color: #A8EEEB;
+}
+
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     background-color: #3183C8;
 }
